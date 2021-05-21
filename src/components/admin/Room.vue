@@ -34,8 +34,19 @@
             <v-text-field label="Summary" :value="selectedRoom.summary"></v-text-field>
             <v-textarea label="Description" :value="selectedRoom.description"></v-textarea>
             <h3>출구</h3>
-            <div v-for="wayout in selectedRoom.wayouts" :key="wayout.id">
-              {{ wayout.direction }}, {{ wayout.nextRoomId }}
+            <div>
+              <v-btn>추가</v-btn>
+              <v-divider></v-divider>
+              <v-list>
+                <v-list-item v-for="wayout in selectedRoom.wayouts" :key="wayout.id">
+                  <v-list-item-content>
+                    {{ wayout.direction }}, {{ wayout.nextRoomId }}
+                  </v-list-item-content>
+                  <v-list-item-action>
+                    <v-btn>하위</v-btn>
+                  </v-list-item-action>
+                </v-list-item>
+              </v-list>
             </div>
           </v-card-text>
           <v-card-actions>
