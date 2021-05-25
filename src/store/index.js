@@ -19,7 +19,10 @@ export default new Vuex.Store({
         Vue.axios.get('/me').then(({ data }) => {
           commit('SET_USER', data)
           resolve(data)
-        }, error => reject(error))
+        }, error => {
+          commit('SET_USER', {})
+          reject(error)
+        })
       })
     },
     logout ({ commit }) {

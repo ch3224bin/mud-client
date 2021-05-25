@@ -8,9 +8,13 @@ import Admin from '../views/Admin.vue'
 Vue.use(VueRouter)
 
 const requireAuth = () => (from, to, next) => {
-  const isAuthenticated = store.getters.isAuthenticated
-  if (isAuthenticated) return next()
-  store.dispatch('fetchUser').then(user => next(), e => next('/login'))
+  // const isAuthenticated = store.getters.isAuthenticated
+  // if (isAuthenticated) return next()
+  store.dispatch('fetchUser').then(() => {
+    next()
+  }, () => {
+    next('/login')
+  })
 }
 
 const routes = [
