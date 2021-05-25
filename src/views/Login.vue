@@ -10,7 +10,8 @@
     </v-card-text>
     <v-card-actions>
       <div>
-        <v-btn color="lime" @click="login">Sign in</v-btn>
+        <v-btn @click="googleLogin()">Google Login</v-btn>
+        <v-btn @click="googleLogout()">Google Logout</v-btn>
       </div>
     </v-card-actions>
   </v-card>
@@ -19,26 +20,11 @@
 <script>
 export default {
   methods: {
-    login () {
-      const params = new URLSearchParams()
-      params.append('username', this.username)
-      params.append('password', this.password)
-
-      this.$store
-        .dispatch('LOGIN', params)
-        .then(function () { this.redirect() })
-        .catch(({ message }) => (this.msg = message))
+    googleLogin () {
+      window.location.href = 'http://localhost:8080/oauth2/authorize/google'
     },
-    redirect () {
-      const { search } = window.location
-      const tokens = search.replace(/^\?/, '').split('&')
-      const { returnPath } = tokens.reduce((qs, tkn) => {
-        const pair = tkn.split('=')
-        qs[pair[0]] = decodeURIComponent(pair[1])
-        return qs
-      }, {})
-
-      this.$router.push(returnPath)
+    googleLogout () {
+      this.$store.dispatch('logout')
     }
   },
   data () {

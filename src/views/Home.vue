@@ -11,7 +11,7 @@ export default {
   name: 'Home',
   methods: {
     connect () {
-      const serverUrl = 'http://localhost:8080/mud-server?X-AUTH-TOKEN=' + localStorage.getItem('accessToken')
+      const serverUrl = 'http://localhost:8080/mud-server'
       const socket = new SockJS(serverUrl)
       this.stompClient = Stomp.over(socket)
       const _stompClient = this.stompClient

@@ -5,32 +5,31 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    accessToken: null
+    currentUser: JSON.parse(sessionStorage.getItem('currentUser')) || {}
   },
   mutations: {
-    LOGIN (state, accessToken) {
-      state.accessToken = accessToken
-      localStorage.setItem('accessToken', accessToken)
-    },
-    LOGOUT (state) {
-      state.accessToken = null
-      delete localStorage.accessToken
+    SET_USER (state, payload) {
+      state.currentUser = payload
+      sessionStorage.setItem('currentUser', JSON.stringify(payload))
     }
   },
   actions: {
-    LOGIN ({ commit }, params) {
-      return Vue.axios
-        .post('/login', params)
-        .then(({ data }) => {
-          commit('LOGIN', data)
-          Vue.axios.defaults.headers.common['X-AUTH-TOKEN'] = data
-        })
+    fetchUser ({ commit }) {
+      return new Promise((resolve, reject) => {
+        Vue.axios.get('/me').then(({ data }) => {
+          commit('SET_USER', data)
+          resolve(data)
+        }, error => reject(error))
+      })
     },
-    LOGOUT ({ commit }) {
-      Vue.axios.defaults.headers.common['X-AUTH-TOKEN'] = undefined
-      commit('LOGOUT')
+    logout ({ commit }) {
+      commit('SET_USER', {})
+      // document.cookie = "backend-session" + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;'
     }
   },
-  modules: {
+  getters: {
+    isAuthenticated: (state) => {
+      return state.currentUser.name
+    }
   }
 })

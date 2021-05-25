@@ -1,21 +1,16 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import store from '../store'
 import Home from '../views/Home.vue'
 import Login from '../views/Login.vue'
 import Admin from '../views/Admin.vue'
 
 Vue.use(VueRouter)
 
-const requireAuth = (returnPath) => (from, to, next) => {
-  const isAuthenticated = localStorage.getItem('accessToken')
+const requireAuth = () => (from, to, next) => {
+  const isAuthenticated = store.getters.isAuthenticated
   if (isAuthenticated) return next()
-  next(`/login?returnPath=${returnPath}`)
-}
-
-const requireAdminAuth = (returnPath) => (from, to, next) => {
-  const isAuthenticated = localStorage.getItem('accessToken')
-  if (isAuthenticated) return next()
-  next(`/login?returnPath=${returnPath}`)
+  store.dispatch('fetchUser').then(user => next(), e => next('/login'))
 }
 
 const routes = [
@@ -23,7 +18,7 @@ const routes = [
     path: '/',
     name: 'Home',
     component: Home,
-    beforeEnter: requireAuth('/')
+    beforeEnter: requireAuth()
   },
   {
     path: '/login',
@@ -34,12 +29,12 @@ const routes = [
     path: '/admin',
     name: 'Admin',
     component: Admin,
-    beforeEnter: requireAdminAuth('admin')
+    beforeEnter: requireAuth()
   },
   {
     path: '/about',
     name: 'About',
-    beforeEnter: requireAuth('about'),
+    beforeEnter: requireAuth(),
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.

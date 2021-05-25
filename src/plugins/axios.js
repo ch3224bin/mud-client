@@ -15,7 +15,8 @@ const config = {
   baseURL: 'http://localhost:8080',
   headers: {
     'Access-Control-Allow-Origin': '*'
-  }
+  },
+  withCredentials: true
 }
 
 const _axios = axios.create(config)
@@ -23,10 +24,6 @@ const _axios = axios.create(config)
 _axios.interceptors.request.use(
   function (config) {
     // Do something before request is sent
-    const accessToken = localStorage.getItem('accessToken')
-    if (accessToken) {
-      config.headers['X-AUTH-TOKEN'] = accessToken
-    }
     return config
   },
   function (error) {
